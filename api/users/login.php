@@ -44,12 +44,23 @@ $stmt->execute([
 
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-if (!$user || !password_verify($password, $user['password_hash'])) {
+if (!$user) {
     http_response_code(401);
 
     echo json_encode([
         "success" => false,
-        "message" => "Invalid email or password"
+        "message" => "User not found"
+    ]);
+
+    exit;
+}
+
+if (!password_verify($password, $user['password_hash'])) {
+    http_response_code(401);
+
+    echo json_encode([
+        "success" => false,
+        "message" => "Password does not match"
     ]);
 
     exit;
